@@ -24,7 +24,6 @@ var messages = {
 };
 
 
-
 // These headers will allow Cross-Origin Resource Sharing (CORS).
 // This code allows this server to talk to websites that
 // are on different domains, for instance, your chat client.
@@ -82,7 +81,7 @@ var requestHandler = function(request, response) {
     //check if the url is exactly /classes/messages
 
 
-  if (url !== '/classes/messages') { //check this
+  if (url !== '/classes/messages' && url !== '/classes/room') { //check this
     statusCode = 404;
     response.writeHead(statusCode, headers);
     response.end();
@@ -112,6 +111,7 @@ var requestHandler = function(request, response) {
       } else {
 
         //send back an error of invalid format
+          //console.log("Clicked");
       }      
 
     });
@@ -132,10 +132,6 @@ var requestHandler = function(request, response) {
     // node to actually send all the data over to the client.
     response.end(JSON.stringify(messages));
   }
-
-
-
-
   
 };
 

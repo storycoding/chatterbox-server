@@ -40,8 +40,8 @@ var defaultCorsHeaders = {
   'access-control-max-age': 10 // Seconds.
 };
 
-
-var requestHandler = function(request, response) {
+                                                    //node also handles the objects we send back
+var requestHandler = function(request, response) { // node creates the request object for us
   // Request and Response come from node's http module.
   //
   // They include information about both the incoming request, such as
@@ -102,7 +102,9 @@ var requestHandler = function(request, response) {
       if (message) { // beware for invalid formats / check later
 
         messages.results.push(message);
-        console.log('dataChunk received, dataChunk: ' + JSON.stringify(message));   
+        console.log(`Message Received (user): ${message.username}`);   
+        console.log(`Message Received (room): ${message.roomname}`);   
+        console.log(`Message Received (text): ${message.text}`);   
         // console.log('message username = ' + message.username);
         statusCode = 201;
         response.writeHead(statusCode, headers);
@@ -131,6 +133,11 @@ var requestHandler = function(request, response) {
     // Calling .end "flushes" the response's internal buffer, forcing
     // node to actually send all the data over to the client.
     response.end(JSON.stringify(messages));
+  }
+
+  if (method === 'OPTIONS') {
+    response.writeHead(statusCode, headers);
+    response.end();
   }
   
 };

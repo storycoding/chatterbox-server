@@ -67,7 +67,7 @@ class ChatterBox {
         console.log('chatterbox: Message sent', data);
       },
       error: (data) => {
-        console.error('chatterbox: Failed to send message', data);
+        console.error('chatterbox: Failed to send message', data); //throws error here
       }
     });    
   }
@@ -77,7 +77,7 @@ class ChatterBox {
     $.ajax({
       url: this.server,
       type: 'GET',
-      data: 'order=-updatedAt',
+      //data: 'order=-updatedAt',
       success: (data) => {
         _(data.results).each((messageData) => {
           if (Date.parse(messageData.updatedAt) > this.lastUpdate) {
@@ -86,7 +86,7 @@ class ChatterBox {
             message.text = messageData.text;
             message.username = messageData.username;
             message.roomname = messageData.roomname;
-            message.updatedAt = Date.parse(messageData.updatedAt);
+            //message.updatedAt = Date.parse(messageData.updatedAt);
 
             message.username = message.username === undefined ? '' : message.username;
             message.text = message.text === undefined ? '' : message.text;
@@ -191,7 +191,7 @@ app.fetch();
 $(document).ready(function() {
     
 
-  setInterval(app.fetch.bind(app), 300);
+  setInterval(app.fetch.bind(app), 3000);
 
   $('#sendMessage').on('click', function(event) {
     var message = {};

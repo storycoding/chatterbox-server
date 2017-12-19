@@ -8,7 +8,7 @@ var handler = require('./request-handler.js'); // importing handleRequest from r
 // normally already claimed by another server and/or not accessible
 // so we'll use a standard testing port like 3000, other common development
 // ports are 8080 and 1337.
-var port = 3000;
+var port = 3000; // this port must match the request's port
 
 // For now, since you're running this server on your local machine,
 // we'll have it listen on the IP address 127.0.0.1, which is a
@@ -25,6 +25,10 @@ var ip = '127.0.0.1';
 var server = http.createServer(handler.requestHandler);
 console.log('Listening on http://' + ip + ':' + port);
 server.listen(port, ip);
+
+//25 - creates an instance of a server
+//27 - node provides the function listen to the port (3000) and packs that data
+                                                // through the request handler
 
 // To start this server, run:
 //

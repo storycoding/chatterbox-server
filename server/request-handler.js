@@ -17,6 +17,11 @@ this file and include it in basic-server.js so that it actually works.
 
 
 
+var messages = {
+
+  results: []
+
+};
 
 
 
@@ -49,6 +54,12 @@ var requestHandler = function(request, response) {
 
   // Do some basic logging.
   //
+
+  const { method, url } = request;
+
+  console.log(`method: ${method}`);
+  console.log(`url: ${url}`);
+
   // Adding more logging to your server can be an easy way to get passive
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
@@ -57,6 +68,7 @@ var requestHandler = function(request, response) {
   // The outgoing status.
   var statusCode = 200;
 
+
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
 
@@ -64,23 +76,71 @@ var requestHandler = function(request, response) {
   //
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
-  headers['Content-Type'] = 'text/plain';
+  headers['Content-Type'] = 'json/application'; // it's recognized content type keyword // check google for content type JSON
 
-  // .writeHead() writes to the request line and headers of the response,
-  // which includes the status and all headers.
-  response.writeHead(statusCode, headers);
 
-  // Make sure to always call response.end() - Node may not send
-  // anything back to the client until you do. The string you pass to
-  // response.end() will be the body of the response - i.e. what shows
-  // up in the browser.
-  //
-  // Calling .end "flushes" the response's internal buffer, forcing
-  // node to actually send all the data over to the client.
-  response.end('Hello, World!');
+    //check if the url is exactly /classes/messages
+
+
+  if (url !== '/classes/messages') { //check this
+    statusCode = 404;
+    response.writeHead(statusCode, headers);
+    response.end();
+    return;
+  }
+
+
+  if (method === 'POST') {    
+
+    //setup a request handler event for data chunks
+    request.on('data', (dataChunk) => {
+
+
+      //ACCEPT ANY MESSAGE
+      
+      let message = JSON.parse(dataChunk);
+  
+      if (message) { // beware for invalid formats / check later
+
+        messages.results.push(message);
+        console.log('dataChunk received, dataChunk: ' + JSON.stringify(message));   
+        // console.log('message username = ' + message.username);
+        statusCode = 201;
+        response.writeHead(statusCode, headers);
+        response.end();
+
+      } else {
+
+        //send back an error of invalid format
+      }      
+
+    });
+  }
+
+  if (method === 'GET') {
+
+    // .writeHead() writes to the request line and headers of the response,
+    // which includes the status and all headers.
+    response.writeHead(statusCode, headers);
+
+    // Make sure to always call response.end() - Node may not send
+    // anything back to the client until you do. The string you pass to
+    // response.end() will be the body of the response - i.e. what shows
+    // up in the browser.
+    //
+    // Calling .end "flushes" the response's internal buffer, forcing
+    // node to actually send all the data over to the client.
+    response.end(JSON.stringify(messages));
+  }
+
+
+
+
+  
 };
 
 
 
-exports.defaultCorsHeaders = defaultCorsHeaders;
-exports.requestHandler = requestHandler;
+module.exports = {
+  requestHandler: requestHandler
+};

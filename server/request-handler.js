@@ -90,7 +90,7 @@ var requestHandler = function(request, response) { // node creates the request o
     request.on('data', (dataChunk) => {
 
       let message = JSON.parse(dataChunk);
-    
+
       if (message) { // beware for invalid formats / check later
         
         message.createdAt = (new Date()).toString();
@@ -99,8 +99,27 @@ var requestHandler = function(request, response) { // node creates the request o
         console.log(`Message Received (room): ${message.roomname}`);   
         console.log(`Message Received (text): ${message.text}`);   
         console.log(`Message Received At: ${message.createdAt}`);  
-
-        messages.results.push(message);
+        //write the messages on the file...
+        
+        //use fs to read file
+        fs.readFile('server/messages.json', function(err, data) { //////////// 
+          console.log('Data', data);
+          //grab data and parse json string into messages object
+          let messages = JSON.parse(data);
+          console.log(messages);
+          //push new message into messages.results
+          messages.results.push(message);
+          //stringify messages object
+          //write the string to the same file/dir
+          messages = JSON.stringify(messages);
+          fs.writeFile('server/messages.json', messages, function(err) {
+            if (err) {
+              console.error(err);
+            } else {
+              console.log('Messages updated');
+            }
+          });
+        });
       //ACCEPT ANY MESSAGE
       }
       

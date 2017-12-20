@@ -58,10 +58,9 @@ class ChatterBox {
      
   //param: message object with strings
   send (message) {
-    $.ajax({
+    let options = {
       url: this.server,
       type: 'POST',
-      contentType: 'application/json',
       data: JSON.stringify(message),
       success: (data) => {
         console.log('chatterbox: Message sent', data);
@@ -69,7 +68,9 @@ class ChatterBox {
       error: (data) => {
         console.error('chatterbox: Failed to send message', data); //throws error here
       }
-    });    
+    };
+
+    $.ajax(options);    
   }
 
   fetch () {
@@ -77,6 +78,7 @@ class ChatterBox {
     $.ajax({
       url: this.server,
       type: 'GET',
+      contentType: 'application/json',
       //data: 'order=-updatedAt',
       success: (data) => {
         _(data.results).each((messageData) => {
@@ -86,7 +88,8 @@ class ChatterBox {
             message.text = messageData.text;
             message.username = messageData.username;
             message.roomname = messageData.roomname;
-            //message.updatedAt = Date.parse(messageData.updatedAt);
+            message.updatedAt = messageData.updatedAt;
+
 
             message.username = message.username === undefined ? '' : message.username;
             message.text = message.text === undefined ? '' : message.text;
@@ -191,7 +194,7 @@ app.fetch();
 $(document).ready(function() {
     
 
-  setInterval(app.fetch.bind(app), 3000);
+  setInterval(app.fetch.bind(app), 5000);
 
   $('#sendMessage').on('click', function(event) {
     var message = {};

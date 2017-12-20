@@ -1,6 +1,5 @@
 /* Import node's http module: */
 var http = require('http'); // how is this working right now?
-
 var handler = require('./request-handler.js'); // importing handleRequest from request-handler // do i need the server keyword?
 
 // Every server needs to listen on a port with a unique number. The
